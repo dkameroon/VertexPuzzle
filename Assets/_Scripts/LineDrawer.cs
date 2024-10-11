@@ -4,130 +4,103 @@ using UnityEngine;
 
 public class LineDrawer : MonoBehaviour
 {
-  public LineRenderer lineRenderer;  // LineRenderer to draw the line
-    private Transform startVertex;     // The vertex where the user starts the drag
-    private bool isDragging = false;   // Whether the user is currently dragging
+    private LineRenderer currentLineRenderer;  // Line being drawn
+    private GameObject currentStartVertex;     // Starting vertex
+    private bool isDrawing = false;            // Drawing state flag
+    private float debounceTime = 0.5f;         // Debounce time to prevent multiple clicks
+    private float lastClickTime = 0f;          // Last time the button was clicked
+    private float clickStartTime = 0f;          // Start time of the current click
 
-    void Start()
-    {
-        // Ensure the LineRenderer is set up properly
-        lineRenderer.positionCount = 0;  // No points initially
-    }
+    public Material lineMaterial;              // Material for the line
 
     void Update()
     {
-        // Handle touch input for mobile or mouse input for testing in the editor
-        if (Input.touchCount > 0 || Input.GetMouseButton(0))
+        // Check debounce time
+        if (Time.time - lastClickTime < debounceTime)
+            return;
+
+        // Start drawing when the mouse is clicked
+        if (Input.GetMouseButtonDown(0) && !isDrawing)
         {
-            Vector3 inputPosition;
+            lastClickTime = Time.time;
+            clickStartTime = Time.time;
+            Debug.Log("Mouse Button Down - Start Drawing");
 
-            // Handle touch or mouse input
-            if (Input.touchCount > 0)
-            {
-                inputPosition = Input.GetTouch(0).position;
-            }
-            else
-            {
-                inputPosition = Input.mousePosition;  // For testing in the editor
-            }
-
-            Ray ray = Camera.main.ScreenPointToRay(inputPosition);
+            // Raycast to find the vertex
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            // Detect if we hit a vertex
+            if (Physics.Raycast(ray, out hit) && hit.collider.CompareTag("Vertex"))   
+            {
+                currentStartVertex = hit.collider.gameObject;
+
+                // Ensure that no line already exists
+                if (currentLineRenderer == null)
+                {
+                    // Create the new LineRenderer starting from the center of the vertex
+                    CreateNewLineRenderer();
+                    Vector3 vertexCenter = currentStartVertex.transform.position;
+                    currentLineRenderer.SetPosition(0, vertexCenter);
+                    currentLineRenderer.SetPosition(1, vertexCenter);  // Start both positions at the center
+
+                    isDrawing = true;  // Set drawing state
+                }
+            }
+        }
+
+        // While drawing, update the second point of the line
+        if (isDrawing && Input.GetMouseButton(0))
+        {
+            Vector3 currentPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.y));   
+
+            // Clamp the Y position to prevent the line from going below the test field
+            currentPos = new Vector3(currentPos.x, Mathf.Max(1, currentPos.y), currentPos.z);
+            currentLineRenderer.SetPosition(1, new Vector3(currentPos.x, 1, currentPos.z));  // Update the end position of the line, clamp Y to 1
+        }
+
+        // Finish drawing when the mouse is released and a minimum click duration has passed
+        if (isDrawing && Input.GetMouseButtonUp(0) && Time.time - clickStartTime >= 0.2f)
+        {
+            Debug.Log("Mouse Button Up - Finish Drawing");
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
             if (Physics.Raycast(ray, out hit))
             {
-                Vertex vertex = hit.collider.GetComponent<Vertex>();
-
-                if (vertex != null)
+                if (hit.collider.CompareTag("Vertex")    && hit.collider.gameObject != currentStartVertex)
                 {
-                    // When the user first touches a vertex, start the line from the vertex position
-                    if (!isDragging)
-                    {
-                        StartLine(vertex.transform);
-                    }
+                    // Snap the line to the new vertex
+                    currentLineRenderer.SetPosition(1, hit.collider.transform.position);
+                }
+                else
+                {
+                    // If not snapped to a valid vertex, destroy the line
+                    Destroy(currentLineRenderer.gameObject);
                 }
             }
 
-            // If dragging, update the end of the line to follow the finger/mouse
-            if (isDragging)
-            {
-                UpdateLine(GetWorldPositionFromInput(inputPosition));
-            }
-        }
-
-        // When the user releases the touch/mouse button
-        if (Input.touchCount == 0 && !Input.GetMouseButton(0) && isDragging)
-        {
-            EndLine();
+            // Reset the drawing state and allow for a new line to be created
+            isDrawing = false;
+            currentLineRenderer = null;  // Ensure that only one LineRenderer exists at a time
         }
     }
 
-    // Starts the line from the vertex
-    void StartLine(Transform vertex)
+    // Method to create a new LineRenderer
+    void CreateNewLineRenderer()
     {
-        startVertex = vertex;
-        isDragging = true;
+        Debug.Log("Creating New Line Renderer");
 
-        // Initialize line with two points
-        lineRenderer.positionCount = 2;
+        GameObject newLine = new GameObject("Line");
+        currentLineRenderer = newLine.AddComponent<LineRenderer>();
 
-        // Set the first point of the line to the vertex position
-        lineRenderer.SetPosition(0, startVertex.position);  // First point is the vertex's position
+        // Set LineRenderer properties
+        currentLineRenderer.material = lineMaterial;
+        currentLineRenderer.startWidth = 0.1f;
+        currentLineRenderer.endWidth = 0.1f;
 
-        // Set the second point to the same vertex's position initially, but will update as we drag
-        lineRenderer.SetPosition(1, startVertex.position);
-    }
-
-    // Updates the end point of the line while dragging
-    void UpdateLine(Vector3 endPosition)
-    {
-        if (isDragging)
-        {
-            // Update only the second point of the line to follow the finger's position
-            lineRenderer.SetPosition(1, endPosition);
-        }
-    }
-
-    // Ends the line when the user releases the touch/mouse on a second vertex
-    void EndLine()
-    {
-        // Finalize the line by checking for another vertex at the release position
-        Vector3 inputPosition = Input.touchCount > 0 ? (Vector3)Input.GetTouch(0).position : Input.mousePosition;
-
-        Ray ray = Camera.main.ScreenPointToRay(inputPosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            Vertex endVertex = hit.collider.GetComponent<Vertex>();
-
-            if (endVertex != null && endVertex.transform != startVertex)
-            {
-                // Complete the line between startVertex and endVertex
-                lineRenderer.SetPosition(1, endVertex.transform.position);  // Snap the line to the second vertex
-            }
-            else
-            {
-                // If the user didn't end on a valid vertex, clear the line
-                lineRenderer.positionCount = 0;  // Reset the line
-            }
-        }
-
-        isDragging = false;  // Stop dragging
-    }
-
-    // Helper to convert screen position to world position
-    Vector3 GetWorldPositionFromInput(Vector3 inputPosition)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(inputPosition);
-        Plane plane = new Plane(Vector3.forward, Vector3.zero);  // Plane for 2D-like interaction on the XY axis
-        float distance;
-        if (plane.Raycast(ray, out distance))
-        {
-            return ray.GetPoint(distance);  // Convert the 2D input to 3D world space
-        }
-
-        return Vector3.zero;  // Fallback if raycast fails
+        // Initialize line positions
+        currentLineRenderer.positionCount = 2;
+        currentLineRenderer.useWorldSpace = true;
     }
 }
