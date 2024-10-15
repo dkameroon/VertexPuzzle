@@ -4,103 +4,114 @@ using UnityEngine;
 
 public class LineDrawer : MonoBehaviour
 {
-    private LineRenderer currentLineRenderer;  // Line being drawn
-    private GameObject currentStartVertex;     // Starting vertex
-    private bool isDrawing = false;            // Drawing state flag
-    private float debounceTime = 0.5f;         // Debounce time to prevent multiple clicks
-    private float lastClickTime = 0f;          // Last time the button was clicked
-    private float clickStartTime = 0f;          // Start time of the current click
+    private LineRenderer currentLineRenderer; 
+    private GameObject currentStartVertex;
+    private bool isDrawing = false;
+    private float debounceTime = 0.1f;
+    private float lastClickTime = 0f; 
 
-    public Material lineMaterial;              // Material for the line
+    public Material lineMaterial;
+    
+    private HashSet<(GameObject, GameObject)> traversedPaths = new HashSet<(GameObject, GameObject)>();
+    
+    private GameObject lastConnectedVertex = null;
 
     void Update()
     {
-        // Check debounce time
         if (Time.time - lastClickTime < debounceTime)
             return;
-
-        // Start drawing when the mouse is clicked
+        
         if (Input.GetMouseButtonDown(0) && !isDrawing)
         {
             lastClickTime = Time.time;
-            clickStartTime = Time.time;
             Debug.Log("Mouse Button Down - Start Drawing");
-
-            // Raycast to find the vertex
+            
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit) && hit.collider.CompareTag("Vertex"))   
+            if (Physics.Raycast(ray, out hit) && hit.collider.CompareTag("Vertex"))
             {
                 currentStartVertex = hit.collider.gameObject;
-
-                // Ensure that no line already exists
-                if (currentLineRenderer == null)
+                
+                if (lastConnectedVertex == null || currentStartVertex == lastConnectedVertex)
                 {
-                    // Create the new LineRenderer starting from the center of the vertex
-                    CreateNewLineRenderer();
-                    Vector3 vertexCenter = currentStartVertex.transform.position;
-                    currentLineRenderer.SetPosition(0, vertexCenter);
-                    currentLineRenderer.SetPosition(1, vertexCenter);  // Start both positions at the center
+                    if (currentLineRenderer == null)
+                    {
+                        CreateNewLineRenderer();
+                        Vector3 vertexCenter = currentStartVertex.transform.position;
+                        currentLineRenderer.SetPosition(0, vertexCenter);
+                        currentLineRenderer.SetPosition(1, vertexCenter);
 
-                    isDrawing = true;  // Set drawing state
+                        isDrawing = true;
+                    }
+                }
+                else
+                {
+                    Debug.Log("You can only draw a line from the last connected vertex!");
                 }
             }
         }
-
-        // While drawing, update the second point of the line
+        
         if (isDrawing && Input.GetMouseButton(0))
         {
-            Vector3 currentPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.y));   
-
-            // Clamp the Y position to prevent the line from going below the test field
+            Vector3 currentPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.y));
             currentPos = new Vector3(currentPos.x, Mathf.Max(1, currentPos.y), currentPos.z);
-            currentLineRenderer.SetPosition(1, new Vector3(currentPos.x, 1, currentPos.z));  // Update the end position of the line, clamp Y to 1
+            currentLineRenderer.SetPosition(1, new Vector3(currentPos.x, 1, currentPos.z));
         }
-
-        // Finish drawing when the mouse is released and a minimum click duration has passed
-        if (isDrawing && Input.GetMouseButtonUp(0) && Time.time - clickStartTime >= 0.2f)
+        
+        if (isDrawing && Input.GetMouseButtonUp(0))
         {
             Debug.Log("Mouse Button Up - Finish Drawing");
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit) && hit.collider.CompareTag("Vertex"))
             {
-                if (hit.collider.CompareTag("Vertex")    && hit.collider.gameObject != currentStartVertex)
+                GameObject endVertex = hit.collider.gameObject;
+                
+                if (endVertex != currentStartVertex && !IsPathAlreadyTraversed(currentStartVertex, endVertex))
                 {
-                    // Snap the line to the new vertex
-                    currentLineRenderer.SetPosition(1, hit.collider.transform.position);
+                    traversedPaths.Add((currentStartVertex, endVertex));
+                    traversedPaths.Add((endVertex, currentStartVertex));
+                    
+                    currentLineRenderer.SetPosition(1, endVertex.transform.position);
+                    
+                    lastConnectedVertex = endVertex;
                 }
                 else
                 {
-                    // If not snapped to a valid vertex, destroy the line
                     Destroy(currentLineRenderer.gameObject);
                 }
             }
-
-            // Reset the drawing state and allow for a new line to be created
+            else
+            {
+                Destroy(currentLineRenderer.gameObject);
+            }
+            
             isDrawing = false;
-            currentLineRenderer = null;  // Ensure that only one LineRenderer exists at a time
+            currentLineRenderer = null;
         }
     }
 
-    // Method to create a new LineRenderer
+   
     void CreateNewLineRenderer()
     {
         Debug.Log("Creating New Line Renderer");
 
         GameObject newLine = new GameObject("Line");
         currentLineRenderer = newLine.AddComponent<LineRenderer>();
-
-        // Set LineRenderer properties
+        
         currentLineRenderer.material = lineMaterial;
         currentLineRenderer.startWidth = 0.1f;
         currentLineRenderer.endWidth = 0.1f;
-
-        // Initialize line positions
+        
         currentLineRenderer.positionCount = 2;
         currentLineRenderer.useWorldSpace = true;
+    }
+    
+    bool IsPathAlreadyTraversed(GameObject start, GameObject end)
+    {
+        return traversedPaths.Contains((start, end));
     }
 }
