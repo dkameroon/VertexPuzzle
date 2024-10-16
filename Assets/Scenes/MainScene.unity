@@ -131,6 +131,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 725495169018267210, guid: 7a3cf43389234964cb69b3b8e80eb2c1, type: 3}
+      propertyPath: levelPaths
+      value: 
+      objectReference: {fileID: 11400000, guid: 25e9e9839318fa64a9abe2b0b6581be1, type: 2}
     - target: {fileID: 4006140562243626857, guid: 7a3cf43389234964cb69b3b8e80eb2c1, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -680,9 +684,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Vertex
       objectReference: {fileID: 0}
+    - target: {fileID: 3859653595945392990, guid: 1dcf0c31de2e3a842b750623ef82b82c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2540359969858736199, guid: 1dcf0c31de2e3a842b750623ef82b82c, type: 3}
     - {fileID: 4872286984488785982, guid: 1dcf0c31de2e3a842b750623ef82b82c, type: 3}
+    - {fileID: 1418316088794391776, guid: 1dcf0c31de2e3a842b750623ef82b82c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
