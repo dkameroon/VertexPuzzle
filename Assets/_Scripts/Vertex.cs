@@ -6,6 +6,7 @@ public class Vertex : MonoBehaviour
 {
     public static Vertex Instance { get; private set; }
 
+    public List<Vertex> connectedVertices = new List<Vertex>();
     private bool isVisited = false;
     
     private void Awake()
