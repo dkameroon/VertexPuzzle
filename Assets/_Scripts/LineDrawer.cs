@@ -9,9 +9,27 @@ public class LineDrawer : MonoBehaviour
     private bool isDrawing = false;
 
     public Material lineMaterial;
+    public Material pathMaterial;
 
-    // To store already drawn lines between vertex pairs
+    public float drawnLineWidth = 0.05f;  // Width for the drawn lines
+    public float pathLineWidth = 0.02f;   // Width for the visual paths
+    public int pathSortingOrder = 0;      // Order for visual paths (render below)
+    public int drawnLineSortingOrder = 1; // Order for user-drawn lines (render above)
+
+    // To store already drawn lines between vertex pairs (for user lines)
     private HashSet<(Vertex, Vertex)> drawnLines = new HashSet<(Vertex, Vertex)>();
+
+    // To store already drawn visual paths
+    private HashSet<(Vertex, Vertex)> drawnVisualPaths = new HashSet<(Vertex, Vertex)>();
+
+    void Start()
+    {
+        // Initialize and draw visual paths between connected vertices at the start of the level
+        foreach (var vertex in FindObjectsOfType<Vertex>())
+        {
+            DrawConnectedPaths(vertex);
+        }
+    }
 
     void Update()
     {
@@ -23,7 +41,7 @@ public class LineDrawer : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 Vertex vertex = hit.collider.GetComponent<Vertex>();
-                
+
                 // Ensure that drawing can only start from the last vertex, or if no line has been drawn, from any vertex
                 if (vertex != null && (lastVertex == null || vertex == lastVertex))
                 {
@@ -39,8 +57,9 @@ public class LineDrawer : MonoBehaviour
 
         if (isDrawing && Input.GetMouseButton(0))
         {
-            // Update the line's end position to follow the mouse
+            // Update the line's end position to follow the mouse, constrained to X and Z axes only
             Vector3 currentPosition = GetMouseWorldPosition();
+            currentPosition.y = currentStartVertex.transform.position.y;  // Constrain the Y to the vertex's Y
             currentLineRenderer.SetPosition(1, currentPosition);
         }
 
@@ -92,10 +111,46 @@ public class LineDrawer : MonoBehaviour
         GameObject lineObject = new GameObject("Line");
         currentLineRenderer = lineObject.AddComponent<LineRenderer>();
         currentLineRenderer.material = lineMaterial;
-        currentLineRenderer.startWidth = 0.05f;
-        currentLineRenderer.endWidth = 0.05f;
+        currentLineRenderer.startWidth = drawnLineWidth;  // Use drawn line width
+        currentLineRenderer.endWidth = drawnLineWidth;
         currentLineRenderer.positionCount = 2;
         currentLineRenderer.useWorldSpace = true;
+
+        // Set sorting order to ensure it's drawn above the visual paths
+        currentLineRenderer.sortingOrder = drawnLineSortingOrder;
+    }
+
+    void DrawConnectedPaths(Vertex vertex)
+    {
+        foreach (Vertex connectedVertex in vertex.connectedVertices)
+        {
+            // Check if the path has already been drawn (in either direction)
+            if (drawnVisualPaths.Contains((vertex, connectedVertex)) || drawnVisualPaths.Contains((connectedVertex, vertex)))
+            {
+                continue;  // Skip if path already exists
+            }
+
+            // Create the visual path line
+            GameObject lineObject = new GameObject("VisualPathLine");
+            LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
+            lineRenderer.material = pathMaterial;
+            lineRenderer.startWidth = pathLineWidth;  // Use path line width
+            lineRenderer.endWidth = pathLineWidth;
+            lineRenderer.positionCount = 2;
+
+            // Set sorting order so it renders below the user-drawn lines
+            lineRenderer.sortingOrder = pathSortingOrder;
+
+            // Set the positions of the line between this vertex and the connected vertex
+            Vector3 startPosition = vertex.transform.position;
+            Vector3 endPosition = connectedVertex.transform.position;
+            lineRenderer.SetPosition(0, startPosition);
+            lineRenderer.SetPosition(1, endPosition);
+
+            // Add the path to the set of drawn visual paths (both directions)
+            drawnVisualPaths.Add((vertex, connectedVertex));
+            drawnVisualPaths.Add((connectedVertex, vertex));
+        }
     }
 
     Vector3 GetMouseWorldPosition()
