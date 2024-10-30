@@ -5,7 +5,7 @@ public class LineDrawer : MonoBehaviour
 {
     private LineRenderer currentLineRenderer;
     private Vertex currentStartVertex;
-    private Vertex lastVertex;  // Track the last vertex where a line was drawn
+    private Vertex lastVertex;
     private bool isDrawing = false;
 
     public Material lineMaterial;
@@ -17,8 +17,9 @@ public class LineDrawer : MonoBehaviour
     public int drawnLineSortingOrder = 1;
     
     private HashSet<(Vertex, Vertex)> drawnLines = new HashSet<(Vertex, Vertex)>();
-    
     private HashSet<(Vertex, Vertex)> drawnVisualPaths = new HashSet<(Vertex, Vertex)>();
+
+    private Material originalMaterial;
 
     void Start()
     {
@@ -46,6 +47,9 @@ public class LineDrawer : MonoBehaviour
                     currentLineRenderer.SetPosition(0, startPosition);
                     currentLineRenderer.SetPosition(1, startPosition);
                     isDrawing = true;
+
+                    originalMaterial = GetTopVertexMaterial(currentStartVertex);
+                    SetTopVertexMaterial(currentStartVertex, lineMaterial);
                 }
             }
         }
@@ -73,20 +77,24 @@ public class LineDrawer : MonoBehaviour
                     else
                     {
                         currentLineRenderer.SetPosition(1, endVertex.transform.position);
-                        lastVertex = endVertex; 
+                        lastVertex = endVertex;
                         
                         drawnLines.Add((currentStartVertex, endVertex));
                         drawnLines.Add((endVertex, currentStartVertex));
+                        
+                        SetTopVertexMaterial(endVertex, lineMaterial);
                     }
                 }
                 else
                 {
                     Destroy(currentLineRenderer.gameObject);
+                    SetTopVertexMaterial(currentStartVertex, originalMaterial);
                 }
             }
             else
             {
                 Destroy(currentLineRenderer.gameObject);
+                SetTopVertexMaterial(currentStartVertex, originalMaterial);
             }
 
             isDrawing = false;
@@ -136,6 +144,48 @@ public class LineDrawer : MonoBehaviour
         }
     }
 
+    void SetTopVertexMaterial(Vertex vertex, Material material)
+    {
+        Transform topVertexTransform = vertex.transform.Find("TopVertex");
+        if (topVertexTransform == null)
+        {
+            foreach (Transform child in vertex.transform)
+            {
+                if (child.name == "TopVertex")
+                {
+                    topVertexTransform = child;
+                    break;
+                }
+            }
+        }
+
+        if (topVertexTransform != null)
+        {
+            Renderer renderer = topVertexTransform.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.material = material;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("TopVertex not found under " + vertex.name);
+        }
+    }
+
+    Material GetTopVertexMaterial(Vertex vertex)
+    {
+        Transform topVertexTransform = vertex.transform.Find("TopVertex");
+        if (topVertexTransform != null)
+        {
+            Renderer renderer = topVertexTransform.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                return renderer.material;
+            }
+        }
+        return null;
+    }
 
     Vector3 GetMouseWorldPosition()
     {

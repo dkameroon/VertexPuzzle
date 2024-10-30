@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3667863493170085258}
   - component: {fileID: 472920414584061209}
   - component: {fileID: 198631365886716179}
-  - component: {fileID: 6240219888223559070}
   m_Layer: 0
   m_Name: TopVertex
   m_TagString: Vertex
@@ -28,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1516816106302639211}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.9717, z: 0}
-  m_LocalScale: {x: 0.55, y: 0.12651101, z: 0.55}
+  m_LocalPosition: {x: 0, y: 0.0494, z: 0}
+  m_LocalScale: {x: 0.55, y: 1.0491636, z: 0.55}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3723972970765072529}
@@ -63,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 180def91177dd8c4bad93880c36dc89a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,19 +107,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &6240219888223559070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1516816106302639211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37bd260a23e4e974d84a8dd045e4c210, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  connectedVertices: []
 --- !u!1 &3859653595945392990
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,6 +119,7 @@ GameObject:
   - component: {fileID: 8978530593336749743}
   - component: {fileID: 8679399944482950964}
   - component: {fileID: 7680290699600521173}
+  - component: {fileID: 9111254639910992222}
   m_Layer: 0
   m_Name: Vertex
   m_TagString: Vertex
@@ -226,6 +213,19 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5000001
-  m_Height: 2
+  m_Height: 2.7088895
   m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+  m_Center: {x: 0.000000074505806, y: 0.35444453, z: -0.000000074505806}
+--- !u!114 &9111254639910992222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3859653595945392990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bd260a23e4e974d84a8dd045e4c210, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  connectedVertices: []
