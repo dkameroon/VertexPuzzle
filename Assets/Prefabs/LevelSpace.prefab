@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9216572206790785726}
   - component: {fileID: 490795567419256264}
   m_Layer: 6
-  m_Name: Lamp 1
+  m_Name: Lamp 2
   m_TagString: Vertex
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 6567878866165691062}
   - component: {fileID: 7289475639163410837}
   m_Layer: 6
-  m_Name: Lamp 2
+  m_Name: Lamp 3
   m_TagString: Vertex
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -282,9 +282,9 @@ Transform:
   - {fileID: 1469394826524004559}
   - {fileID: 9137517088497847467}
   - {fileID: 7956786021531224885}
+  - {fileID: 6593659368133517673}
   - {fileID: 1634076603694923834}
   - {fileID: 7948252271285888071}
-  - {fileID: 6593659368133517673}
   - {fileID: 3581163541599157583}
   - {fileID: 4050852753487410999}
   - {fileID: 1771802473242016482}
@@ -307,7 +307,7 @@ GameObject:
   - component: {fileID: 5156131285552535222}
   - component: {fileID: 583094227069399595}
   m_Layer: 6
-  m_Name: Lamp 3
+  m_Name: Lamp 1
   m_TagString: Vertex
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

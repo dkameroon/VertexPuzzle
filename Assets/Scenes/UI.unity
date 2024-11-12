@@ -447,7 +447,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 2532, y: 1170}
+  m_ReferenceResolution: {x: 1080, y: 1920}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
@@ -491,7 +491,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1950159081}
-  - {fileID: 695495115}
   - {fileID: 1741620892}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1084,7 +1083,7 @@ RectTransform:
   - {fileID: 681461162}
   - {fileID: 686773162}
   - {fileID: 568992139}
-  m_Father: {fileID: 461596462}
+  m_Father: {fileID: 1950159081}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1658,8 +1657,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70
-  m_fontSizeBase: 70
+  m_fontSize: 80
+  m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2130,7 +2129,7 @@ GameObject:
   - component: {fileID: 1597640400}
   - component: {fileID: 1597640399}
   m_Layer: 5
-  m_Name: Button
+  m_Name: PlayButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2152,10 +2151,10 @@ RectTransform:
   m_Father: {fileID: 1741620892}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -101}
-  m_SizeDelta: {x: 350, y: 150}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 300}
+  m_SizeDelta: {x: 325, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1597640399
 MonoBehaviour:
@@ -2215,7 +2214,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1597640401}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1741620893}
+        m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1597640401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2263,6 +2274,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1741620892}
+  - component: {fileID: 1741620893}
   m_Layer: 5
   m_Name: MainMenuUI
   m_TagString: Untagged
@@ -2293,6 +2305,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1741620893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741620891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8f685ba9ca47874cbf1970213a0aafa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playButton: {fileID: 1597640400}
+  mainMenuUI: {fileID: 1741620891}
+  gameUI: {fileID: 1950159080}
 --- !u!1 &1904748112
 GameObject:
   m_ObjectHideFlags: 0
@@ -2402,10 +2429,10 @@ RectTransform:
   m_Father: {fileID: 1741620892}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -685}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 350, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1907533181
 MonoBehaviour:
@@ -2427,7 +2454,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Vertex \nPuzzle"
+  m_text: 'Vertex '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2490,7 +2517,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -226.32812, y: 0, z: -287.36963, w: -147.27588}
+  m_margin: {x: -0.38360596, y: 0, z: -1.8578796, w: 0.61503613}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2535,6 +2562,7 @@ RectTransform:
   - {fileID: 969500861}
   - {fileID: 983981788}
   - {fileID: 1138793000}
+  - {fileID: 695495115}
   m_Father: {fileID: 461596462}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

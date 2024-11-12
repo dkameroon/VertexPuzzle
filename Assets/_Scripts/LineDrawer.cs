@@ -10,12 +10,15 @@ public class LineDrawer : MonoBehaviour
 
     public Material lineMaterial;
     public Material pathMaterial;
+    public Material redBulbMaterial;
 
     public float drawnLineWidth = 0.05f;
     public float pathLineWidth = 0.15f;
     public int pathSortingOrder = 0;
     public int drawnLineSortingOrder = 1;
     
+    public List<GameObject> lifeBulbs;
+    private int mistakeCount = 0;
     private HashSet<(Vertex, Vertex)> drawnLines = new HashSet<(Vertex, Vertex)>();
     private HashSet<(Vertex, Vertex)> drawnVisualPaths = new HashSet<(Vertex, Vertex)>();
 
@@ -73,6 +76,7 @@ public class LineDrawer : MonoBehaviour
                     if (drawnLines.Contains((currentStartVertex, endVertex)) || drawnLines.Contains((endVertex, currentStartVertex)))
                     {
                         Destroy(currentLineRenderer.gameObject);
+                        HandleMistake();
                     }
                     else
                     {
@@ -87,6 +91,10 @@ public class LineDrawer : MonoBehaviour
                 }
                 else
                 {
+                    if (endVertex != currentStartVertex)
+                    {
+                        HandleMistake();
+                    }
                     Destroy(currentLineRenderer.gameObject);
                     SetTopVertexMaterial(currentStartVertex, originalMaterial);
                 }
@@ -98,6 +106,15 @@ public class LineDrawer : MonoBehaviour
             }
 
             isDrawing = false;
+        }
+    }
+    
+    void HandleMistake()
+    {
+        if (mistakeCount < lifeBulbs.Count)
+        {
+            lifeBulbs[mistakeCount].GetComponent<Renderer>().material = redBulbMaterial;
+            mistakeCount++;
         }
     }
 

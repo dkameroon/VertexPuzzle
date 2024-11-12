@@ -31,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &725495169018267210
 MonoBehaviour:
@@ -46,6 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineMaterial: {fileID: 2100000, guid: 5326cafc75ef0fb42be0ad2601946ca0, type: 2}
+  pathMaterial: {fileID: 2100000, guid: 6b1a39f8f4764734fa4189a1eeaa858c, type: 2}
+  redBulbMaterial: {fileID: 2100000, guid: bd42feb6ee4e93f4b98650d13d2031c4, type: 2}
+  drawnLineWidth: 0.05
+  pathLineWidth: 0.15
+  pathSortingOrder: 0
+  drawnLineSortingOrder: 1
+  lifeBulbs: []
 --- !u!120 &1288201006450752666
 LineRenderer:
   serializedVersion: 2
