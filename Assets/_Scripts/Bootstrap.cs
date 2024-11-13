@@ -13,7 +13,7 @@ public class Bootstrap : MonoBehaviour
 
     public void Awake()
     {
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = 120;
 
         
         for (int i = 1; i < _scenesCount; i++)

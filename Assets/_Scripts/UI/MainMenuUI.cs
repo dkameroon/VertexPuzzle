@@ -9,8 +9,6 @@ public class MainMenuUI : BaseUI
 {
     public static MainMenuUI Instance { get; private set; }
     public Button playButton;
-    public GameObject mainMenuUI;
-    public GameObject gameUI;
 
     private void Awake()
     {
@@ -19,13 +17,11 @@ public class MainMenuUI : BaseUI
 
     private void Start()
     {
-        gameUI.gameObject.SetActive(false);
+        
     }
 
     public void StartGame()
     {
-        SceneManager.LoadSceneAsync(4);
-        mainMenuUI.gameObject.SetActive(false);
-        gameUI.gameObject.SetActive(true);
+        LevelManager.Instance.StartGame();
     }
 }
