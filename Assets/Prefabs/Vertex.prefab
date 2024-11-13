@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3667863493170085258}
   - component: {fileID: 472920414584061209}
   - component: {fileID: 198631365886716179}
-  - component: {fileID: 5733465672720643654}
   m_Layer: 6
   m_Name: TopVertex
   m_TagString: Vertex
@@ -108,23 +107,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &5733465672720643654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1516816106302639211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 11400000, guid: 31e66a4aa19db2043ba95ce1f71e3d31, type: 2}
-  isGlobal: 1
-  blendDistance: 0
-  weight: 1
-  priority: 0
 --- !u!1 &3859653595945392990
 GameObject:
   m_ObjectHideFlags: 0

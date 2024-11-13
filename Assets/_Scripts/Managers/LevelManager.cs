@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -72,28 +71,18 @@ public class LevelManager : MonoBehaviour
     private void LoadLevel(string levelName)
     {
         SceneUnload();
-    
-        if (SceneManager.GetSceneByName("MainMenu").isLoaded)
+        
+        if (SceneManager.GetSceneByName(PlayerPrefsNames.MAIN_MENU_SCENE).isLoaded)
         {
-            SceneManager.UnloadSceneAsync("MainMenu");
+            SceneManager.UnloadSceneAsync(PlayerPrefsNames.MAIN_MENU_SCENE);
         }
-    
+        
         activeLevelName = levelName;
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Additive);
-
-        asyncLoad.completed += (asyncOp) =>
+        asyncLoad.completed += (asyncOperation) => 
         {
             Scene loadedScene = SceneManager.GetSceneByName(levelName);
             SceneManager.SetActiveScene(loadedScene);
-            
-            Light[] lights = loadedScene.GetRootGameObjects()
-                .SelectMany(go => go.GetComponentsInChildren<Light>())
-                .ToArray();
-            foreach (var light in lights)
-            {
-                light.enabled = true;
-            }
-
             UIManager.Instance.mainMenuUI.gameObject.SetActive(false);
             UIManager.Instance.gameUI.gameObject.SetActive(true);
             UIManager.Instance.pauseUI.gameObject.SetActive(false);
@@ -102,7 +91,7 @@ public class LevelManager : MonoBehaviour
             int levelNumber = int.Parse(levelNumberStr);
             string formattedLevel = string.Format("LEVEL {0:D2}", levelNumber);
             GameUI.Instance.levelText.text = formattedLevel;
-
+            
             isLoaded = true;
         };
     }
