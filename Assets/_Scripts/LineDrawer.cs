@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LineDrawer : MonoBehaviour
 {
+    public static LineDrawer Instance;
+    
     private LineRenderer currentLineRenderer;
     private Vertex currentStartVertex;
     private Vertex lastVertex;
@@ -17,26 +20,26 @@ public class LineDrawer : MonoBehaviour
     public int pathSortingOrder = 0;
     public int drawnLineSortingOrder = 1;
     
-    public List<GameObject> lifeBulbs;
     private int mistakeCount = 0;
     private HashSet<(Vertex, Vertex)> drawnLines = new HashSet<(Vertex, Vertex)>();
     private HashSet<(Vertex, Vertex)> drawnVisualPaths = new HashSet<(Vertex, Vertex)>();
 
     private Material originalMaterial;
 
-    void Start()
+    private void Awake()
     {
-        foreach (var vertex in FindObjectsOfType<Vertex>())
-        {
-            DrawConnectedPaths(vertex);
-        }
+        Instance = this;
     }
 
     void Update()
     {
+        
         if (Input.GetMouseButtonDown(0) && !isDrawing)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (!LevelObjects.Instance)
+                return;
+            
+            Ray ray = LevelObjects.Instance.MainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
@@ -111,9 +114,9 @@ public class LineDrawer : MonoBehaviour
     
     void HandleMistake()
     {
-        if (mistakeCount < lifeBulbs.Count)
+        if (mistakeCount < LevelObjects.Instance.LightBulbs.Count)
         {
-            lifeBulbs[mistakeCount].GetComponent<Renderer>().material = redBulbMaterial;
+            LevelObjects.Instance.LightBulbs[mistakeCount].GetComponent<Renderer>().material = redBulbMaterial;
             mistakeCount++;
         }
     }
@@ -214,5 +217,13 @@ public class LineDrawer : MonoBehaviour
             return ray.GetPoint(distance);
         }
         return Vector3.zero;
+    }
+
+    public void DrawPaths()
+    {
+        foreach (var vertex in FindObjectsOfType<Vertex>())
+        {
+            DrawConnectedPaths(vertex);
+        }
     }
 }
