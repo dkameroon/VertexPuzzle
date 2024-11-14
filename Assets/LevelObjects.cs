@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LevelObjects : MonoBehaviour
@@ -8,6 +9,7 @@ public class LevelObjects : MonoBehaviour
     
     public List<GameObject> LightBulbs;
     public Camera MainCamera;
+    public TextMeshProUGUI TimerText;
 
     private void Awake()
     {

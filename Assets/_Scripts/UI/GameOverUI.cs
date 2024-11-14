@@ -1,18 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameOverUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public static GameOverUI Instance;
+    
+    public Button GameOverRetryButton;
+    public Button GameOverMenuButton;
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        Instance = this;
     }
 }

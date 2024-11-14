@@ -28,6 +28,7 @@ public class LevelManager : MonoBehaviour
     public void StartGame()
     {
         string lastCompletedLevel = PlayerPrefs.GetString(ProgressKey, "Level 1");
+        Time.timeScale = 1f;
         LoadLevel(lastCompletedLevel);
         SceneManager.UnloadSceneAsync("MainMenu");
     }
@@ -63,9 +64,15 @@ public class LevelManager : MonoBehaviour
 
     public void LoadMainMenu()
     {
-        SceneManager.LoadSceneAsync("MainMenu");
-        UIManager.Instance.mainMenuUI.gameObject.SetActive(true);
-        UIManager.Instance.gameUI.gameObject.SetActive(false);
+        SceneUnload();
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(PlayerPrefsNames.MAIN_MENU_SCENE, LoadSceneMode.Additive);
+        asyncLoad.completed += (asyncOperation) =>
+        {
+            Scene nameScene = SceneManager.GetSceneByName("MainMenu");
+            SceneManager.SetActiveScene(nameScene);
+            UIManager.Instance.mainMenuUI.gameObject.SetActive(true);
+            UIManager.Instance.gameUI.gameObject.SetActive(false);
+        };
     }
 
     private void LoadLevel(string levelName)
@@ -83,6 +90,8 @@ public class LevelManager : MonoBehaviour
         {
             Scene loadedScene = SceneManager.GetSceneByName(levelName);
             SceneManager.SetActiveScene(loadedScene);
+            VertexGameManager.Instance.SetLevelTime(levelName);
+            VertexGameManager.Instance.StartTimer();
             UIManager.Instance.mainMenuUI.gameObject.SetActive(false);
             UIManager.Instance.gameUI.gameObject.SetActive(true);
             UIManager.Instance.pauseUI.gameObject.SetActive(false);

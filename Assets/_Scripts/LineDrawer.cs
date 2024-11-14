@@ -20,20 +20,26 @@ public class LineDrawer : MonoBehaviour
     public int pathSortingOrder = 0;
     public int drawnLineSortingOrder = 1;
     
-    private int mistakeCount = 0;
+    public int MistakeCount = 0;
     private HashSet<(Vertex, Vertex)> drawnLines = new HashSet<(Vertex, Vertex)>();
     private HashSet<(Vertex, Vertex)> drawnVisualPaths = new HashSet<(Vertex, Vertex)>();
 
     private Material originalMaterial;
+    
+    public int totalPaths;
 
     private void Awake()
     {
         Instance = this;
     }
 
+    private void Start()
+    {
+        DrawPaths();
+    }
+
     void Update()
     {
-        
         if (Input.GetMouseButtonDown(0) && !isDrawing)
         {
             if (!LevelObjects.Instance)
@@ -90,6 +96,11 @@ public class LineDrawer : MonoBehaviour
                         drawnLines.Add((endVertex, currentStartVertex));
                         
                         SetTopVertexMaterial(endVertex, lineMaterial);
+                        
+                        if (drawnLines.Count / 2 == totalPaths)
+                        {
+                            VertexGameManager.Instance.LevelComplete();
+                        }
                     }
                 }
                 else
@@ -111,13 +122,41 @@ public class LineDrawer : MonoBehaviour
             isDrawing = false;
         }
     }
-    
+
+   
     void HandleMistake()
     {
-        if (mistakeCount < LevelObjects.Instance.LightBulbs.Count)
+        if (MistakeCount < LevelObjects.Instance.LightBulbs.Count)
         {
-            LevelObjects.Instance.LightBulbs[mistakeCount].GetComponent<Renderer>().material = redBulbMaterial;
-            mistakeCount++;
+            LevelObjects.Instance.LightBulbs[MistakeCount].GetComponent<Renderer>().material = redBulbMaterial;
+            MistakeCount++;
+        }
+        
+        if (MistakeCount >= 3)
+        {
+            VertexGameManager.Instance.VertexGameOver();
+        }
+    }
+    
+    public void ResetLevel()
+    {
+        totalPaths = 0;
+        drawnLines.Clear();
+        drawnVisualPaths.Clear();
+        MistakeCount = 0;
+    }
+    
+    public void ResetMistakes()
+    {
+        MistakeCount = 0;
+        
+        foreach (var lightBulb in LevelObjects.Instance.LightBulbs)
+        {
+            Renderer renderer = lightBulb.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.material = originalMaterial;
+            }
         }
     }
 
@@ -161,6 +200,8 @@ public class LineDrawer : MonoBehaviour
 
             drawnVisualPaths.Add((vertex, connectedVertex));
             drawnVisualPaths.Add((connectedVertex, vertex));
+
+            totalPaths++;
         }
     }
 

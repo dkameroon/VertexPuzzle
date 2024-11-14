@@ -10,7 +10,7 @@ public class GameUI : BaseUI
 {
     public static GameUI Instance { get; private set; }
     
-    [SerializeField] public Button pauseGameButton;
+    [SerializeField] public Button PauseGameButton;
     [SerializeField] public TextMeshProUGUI levelText;
 
 
