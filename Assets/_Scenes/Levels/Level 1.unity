@@ -185,12 +185,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5743138664719974781, guid: 018d59a571d08d74c8d378dd0f7e74dd, type: 3}
       propertyPath: m_fontSize
-      value: 2.9
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5743138664719974781, guid: 018d59a571d08d74c8d378dd0f7e74dd, type: 3}
+      propertyPath: m_margin.z
+      value: 0.35087967
       objectReference: {fileID: 0}
     - target: {fileID: 5743138664719974781, guid: 018d59a571d08d74c8d378dd0f7e74dd, type: 3}
       propertyPath: m_fontAsset
       value: 
-      objectReference: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
+      objectReference: {fileID: 11400000, guid: cda919b0025b95b409a2f6b5dae99d11, type: 2}
     - target: {fileID: 5743138664719974781, guid: 018d59a571d08d74c8d378dd0f7e74dd, type: 3}
       propertyPath: m_fontStyle
       value: 1
@@ -198,10 +202,18 @@ PrefabInstance:
     - target: {fileID: 5743138664719974781, guid: 018d59a571d08d74c8d378dd0f7e74dd, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
+      objectReference: {fileID: 6067952464657248211, guid: cda919b0025b95b409a2f6b5dae99d11, type: 2}
+    - target: {fileID: 5743138664719974781, guid: 018d59a571d08d74c8d378dd0f7e74dd, type: 3}
+      propertyPath: m_characterSpacing
+      value: 126.4
+      objectReference: {fileID: 0}
     - target: {fileID: 5743138664719974781, guid: 018d59a571d08d74c8d378dd0f7e74dd, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8752348572899888228, guid: 018d59a571d08d74c8d378dd0f7e74dd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 9135806998728586918, guid: 018d59a571d08d74c8d378dd0f7e74dd, type: 3}
       propertyPath: TimerText
