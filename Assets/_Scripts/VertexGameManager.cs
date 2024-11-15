@@ -27,6 +27,24 @@ public class VertexGameManager : MonoBehaviour
 
     private void Start()
     {
+        MainMenuUI.Instance.thankYouMessage.gameObject.SetActive(false);
+        MainMenuUI.Instance.okThankYouMessage.onClick.AddListener(() =>
+        {
+            MainMenuUI.Instance.thankYouMessage.gameObject.SetActive(false);
+            UIManager.Instance.OnOkButtonPressed();
+        });
+        MainMenuUI.Instance.playButton.onClick.AddListener(() =>
+        {
+            LevelManager.Instance.StartGame();
+            PauseUI.Instance.gameObject.SetActive(false);
+            GameOverUI.Instance.gameObject.SetActive(false);
+            LevelCompleteUI.Instance.gameObject.SetActive(false);
+            LineDrawer.Instance.ResetLevel();
+        });
+        MainMenuUI.Instance.resetProgressButton.onClick.AddListener(() =>
+        {
+            LevelManager.Instance.ResetProgress();
+        });
         /*SettingsUI.Instance.gameObject.SetActive(false);*/
         PauseUI.Instance.gameObject.SetActive(false);
         LevelCompleteUI.Instance.gameObject.SetActive(false);

@@ -1,27 +1,19 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuUI : BaseUI
 {
     public static MainMenuUI Instance { get; private set; }
     public Button playButton;
+    public Button resetProgressButton;
+    
+    public GameObject thankYouMessage;
+    public Button okThankYouMessage;
 
     private void Awake()
     {
         Instance = this;
-    }
-
-    private void Start()
-    {
-        
-    }
-
-    public void StartGame()
-    {
-        LevelManager.Instance.StartGame();
     }
 }

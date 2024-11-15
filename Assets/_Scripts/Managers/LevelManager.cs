@@ -49,7 +49,8 @@ public class LevelManager : MonoBehaviour
             else
             {
                 Debug.Log("No more levels available. Returning to Main Menu.");
-                LoadMainMenu();
+                CompleteLevel(activeLevelName);
+                LoadMainMenu(true);
             }
         }
     }
@@ -62,16 +63,25 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public void LoadMainMenu()
+    public void LoadMainMenu(bool showThankYouMessage = false)
     {
         SceneUnload();
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(PlayerPrefsNames.MAIN_MENU_SCENE, LoadSceneMode.Additive);
         asyncLoad.completed += (asyncOperation) =>
         {
-            Scene nameScene = SceneManager.GetSceneByName("MainMenu");
+            Scene nameScene = SceneManager.GetSceneByName(PlayerPrefsNames.MAIN_MENU_SCENE);
             SceneManager.SetActiveScene(nameScene);
             UIManager.Instance.mainMenuUI.gameObject.SetActive(true);
             UIManager.Instance.gameUI.gameObject.SetActive(false);
+            
+            if (showThankYouMessage)
+            {
+                UIManager.Instance.ShowThankYouMessage();
+            }
+            else
+            {
+                UIManager.Instance.HideThankYouMessage();
+            }
         };
     }
 
@@ -131,5 +141,6 @@ public class LevelManager : MonoBehaviour
     {
         PlayerPrefs.SetString(ProgressKey, "Level 1");
         PlayerPrefs.Save();
+        Debug.Log("Progress reset!");
     }
 }
