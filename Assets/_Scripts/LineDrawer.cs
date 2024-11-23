@@ -86,6 +86,7 @@ public class LineDrawer : MonoBehaviour
                     {
                         Destroy(currentLineRenderer.gameObject);
                         HandleMistake();
+                        SoundEffectsManager.Instance.PlaySound("mistakeSound");
                     }
                     else
                     {
@@ -108,6 +109,7 @@ public class LineDrawer : MonoBehaviour
                     if (endVertex != currentStartVertex)
                     {
                         HandleMistake();
+                        SoundEffectsManager.Instance.PlaySound("mistakeSound");
                     }
                     Destroy(currentLineRenderer.gameObject);
                     SetTopVertexMaterial(currentStartVertex, originalMaterial);
