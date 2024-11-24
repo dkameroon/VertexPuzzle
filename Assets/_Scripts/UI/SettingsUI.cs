@@ -1,18 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SettingsUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public static SettingsUI Instance { get; private set; }
+    
+    [SerializeField] public Button settingsCloseButton;
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField] public Slider musicVolumeSlider;
+    [SerializeField] public Slider soundVolumeSlider;
+
+    [SerializeField] public TextMeshProUGUI musicSliderText;
+    [SerializeField] public TextMeshProUGUI soundsSliderText;
+
+    private void Awake()
     {
-        
+        Instance = this;
     }
 }

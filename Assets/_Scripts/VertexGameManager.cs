@@ -27,6 +27,7 @@ public class VertexGameManager : MonoBehaviour
 
     private void Start()
     {
+        InitializeVolumeSliders();
         MainMenuUI.Instance.thankYouMessage.gameObject.SetActive(false);
         MainMenuUI.Instance.okThankYouMessage.onClick.AddListener(() =>
         {
@@ -45,7 +46,12 @@ public class VertexGameManager : MonoBehaviour
         {
             LevelManager.Instance.ResetProgress();
         });
-        /*SettingsUI.Instance.gameObject.SetActive(false);*/
+        SettingsUI.Instance.gameObject.SetActive(false);
+        SettingsUI.Instance.settingsCloseButton.onClick.AddListener(() =>
+        {
+            SettingsUI.Instance.gameObject.SetActive(false);
+            InitializeVolumeSliders();
+        });
         PauseUI.Instance.gameObject.SetActive(false);
         LevelCompleteUI.Instance.gameObject.SetActive(false);
         GameOverUI.Instance.gameObject.SetActive(false);
@@ -66,6 +72,10 @@ public class VertexGameManager : MonoBehaviour
         PauseUI.Instance.menuPauseButton.onClick.AddListener(() =>
         {
             LevelManager.Instance.LoadMainMenu();
+        });
+        PauseUI.Instance.settingsButton.onClick.AddListener(() =>
+        {
+            SettingsUI.Instance.gameObject.SetActive(true);
         });
         LevelCompleteUI.Instance.LevelCompleteNextLevelButton.onClick.AddListener(() =>
         {
@@ -91,8 +101,26 @@ public class VertexGameManager : MonoBehaviour
             LevelManager.Instance.LoadMainMenu();
         });
     }
+    
+    private void Update()
+    {
+        if (isTimerRunning && remainingTime > 0)
+        {
+            remainingTime -= Time.deltaTime;
 
-    public void SetLevelTime(string levelName)
+            int minutes = Mathf.FloorToInt(remainingTime / 60);
+            int seconds = Mathf.FloorToInt(remainingTime % 60);
+            LevelObjects.Instance.TimerText.text = $"{minutes:D1}{seconds:D2}";
+
+            if (remainingTime <= 0.01)
+            {
+                isTimerRunning = false;
+                TimerEnded();
+            }
+        }
+    }
+    
+     public void SetLevelTime(string levelName)
     {
         int timeLimit = levelData.GetTimeLimit(levelName);
         remainingTime = (timeLimit / 100 * 60) + (timeLimit % 100);
@@ -106,6 +134,41 @@ public class VertexGameManager : MonoBehaviour
     public void StopTimer()
     {
         isTimerRunning = false;
+    }
+    
+    private void InitializeVolumeSliders()
+    {
+        if (SettingsUI.Instance.musicVolumeSlider != null)
+        {
+            float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+            SettingsUI.Instance.musicVolumeSlider.value = savedMusicVolume;
+            MusicManager.Instance.SetMusicVolume(savedMusicVolume);
+            UpdateMusicVolumeText(savedMusicVolume);
+            
+            SettingsUI.Instance.musicVolumeSlider.onValueChanged.AddListener((value) =>
+            {
+                MusicManager.Instance.SetMusicVolume(value);
+                PlayerPrefs.SetFloat("MusicVolume", value);
+                PlayerPrefs.Save();
+                UpdateMusicVolumeText(value);
+            });
+        }
+
+        if (SettingsUI.Instance.soundVolumeSlider != null)
+        {
+            float savedSoundVolume = PlayerPrefs.GetFloat("SoundVolume", 1f);
+            SettingsUI.Instance.soundVolumeSlider.value = savedSoundVolume;
+            SoundEffectsManager.Instance.SetSFXVolume(savedSoundVolume);
+            UpdateSoundVolumeText(savedSoundVolume);
+            
+            SettingsUI.Instance.soundVolumeSlider.onValueChanged.AddListener((value) =>
+            {
+                SoundEffectsManager.Instance.SetSFXVolume(value);
+                PlayerPrefs.SetFloat("SoundVolume", value);
+                PlayerPrefs.Save();
+                UpdateSoundVolumeText(value);
+            });
+        }
     }
 
     public void RetryLevel()
@@ -127,30 +190,31 @@ public class VertexGameManager : MonoBehaviour
         Time.timeScale = 0f;
         GameOverUI.Instance.gameObject.SetActive(true);
     }
-    
-    private void Update()
-    {
-        if (isTimerRunning && remainingTime > 0)
-        {
-            remainingTime -= Time.deltaTime;
-
-            int minutes = Mathf.FloorToInt(remainingTime / 60);
-            int seconds = Mathf.FloorToInt(remainingTime % 60);
-            LevelObjects.Instance.TimerText.text = $"{minutes:D1}{seconds:D2}";
-
-            if (remainingTime <= 0.01)
-            {
-                isTimerRunning = false;
-                TimerEnded();
-            }
-        }
-    }
 
     private void TimerEnded()
     {
         VertexGameOver();
     }
 
+    
+    private void UpdateMusicVolumeText(float volume)
+    {
+        if (SettingsUI.Instance.musicSliderText != null)
+        {
+            int percentage = Mathf.RoundToInt(volume * 100);
+            SettingsUI.Instance.musicSliderText.text = $"{percentage}%";
+        }
+    }
+
+    private void UpdateSoundVolumeText(float volume)
+    {
+        if (SettingsUI.Instance.soundsSliderText != null)
+        {
+            int percentage = Mathf.RoundToInt(volume * 100);
+            SettingsUI.Instance.soundsSliderText.text = $"{percentage}%";
+        }
+    }
+    
     public void LevelComplete()
     {
         Time.timeScale = 0f;
