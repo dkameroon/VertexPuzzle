@@ -38,6 +38,10 @@ public class SoundEffectsManager : MonoBehaviour
     public void PlaySound(string soundName)
     {
         AudioClip clip = soundEffectCollection.GetSound(soundName);
+        if (soundName == "victorySound" || soundName == "defeatSound")
+        {
+            MusicManager.Instance.PauseMusic();
+        }
         if (clip == null)
         {
             Debug.LogWarning($"Sound '{soundName}' not found in the collection.");

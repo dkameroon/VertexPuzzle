@@ -138,7 +138,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!114 &345458299
 MonoBehaviour:
@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musicTracks:
-  - {fileID: 8300000, guid: 63a9a6adba156fb4297d868d2568a2ec, type: 3}
-  musicVolume: 0.007
+  - {fileID: 8300000, guid: 91927c4200bb59242966fbef4ba40bf1, type: 3}
+  musicVolume: 0.404
 --- !u!4 &345458300
 Transform:
   m_ObjectHideFlags: 0

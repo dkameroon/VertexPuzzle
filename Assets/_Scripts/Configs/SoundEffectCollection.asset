@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - soundName: defeatSound
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 56caa8034cf970340bbc0668b769de6a, type: 3}
   - soundName: mistakeSound
-    audioClip: {fileID: 8300000, guid: 1c78e6ac460a904429a7aab765212adf, type: 3}
+    audioClip: {fileID: 8300000, guid: d28616ca0f0ae674288f886202f8d3d3, type: 3}
   - soundName: victorySound
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: e48a3663842814a439813871b968f219, type: 3}
   - soundName: buttonSound
     audioClip: {fileID: 0}
   - soundName: correctConnectionSound
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 1aec9eacc6ba5e74f9159b13db1e243e, type: 3}

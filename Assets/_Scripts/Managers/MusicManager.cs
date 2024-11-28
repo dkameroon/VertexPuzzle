@@ -14,6 +14,7 @@ public class MusicManager : MonoBehaviour
     private AudioSource musicSource;
 
     private int currentTrackIndex = 0;
+    private bool isMusicPaused;
 
     private void Awake()
     {
@@ -21,8 +22,9 @@ public class MusicManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            SetupAudioSource();
+            InitializeMusicSource();
             LoadMusicVolume();
+            PlayCurrentTrack();
         }
         else
         {
@@ -30,36 +32,51 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    private void SetupAudioSource()
+    private void InitializeMusicSource()
     {
         musicSource = gameObject.AddComponent<AudioSource>();
         musicSource.loop = false;
         musicSource.playOnAwake = false;
         musicSource.volume = musicVolume;
-
-        musicSource.clip = GetCurrentTrack();
-        musicSource.Play();
     }
 
     private void Update()
     {
-        if (!musicSource.isPlaying)
+        if (!isMusicPaused && !musicSource.isPlaying)
         {
-            PlayNextTrackOrRepeat();
+            PlayNextTrack();
         }
     }
 
     public void PlayMusic(int trackIndex)
     {
-        if (trackIndex < 0 || trackIndex >= musicTracks.Length)
+        if (IsValidTrackIndex(trackIndex))
         {
-            Debug.LogWarning("Track index out of range.");
-            return;
+            currentTrackIndex = trackIndex;
+            PlayCurrentTrack();
         }
+        else
+        {
+            Debug.LogWarning($"Invalid track index: {trackIndex}");
+        }
+    }
 
-        currentTrackIndex = trackIndex;
-        musicSource.clip = musicTracks[trackIndex];
-        musicSource.Play();
+    public void PauseMusic()
+    {
+        if (musicSource.isPlaying)
+        {
+            musicSource.Pause();
+            isMusicPaused = true;
+        }
+    }
+
+    public void ResumeMusic()
+    {
+        if (isMusicPaused)
+        {
+            musicSource.UnPause();
+            isMusicPaused = false;
+        }
     }
 
     public void StopMusic()
@@ -74,7 +91,9 @@ public class MusicManager : MonoBehaviour
     {
         musicVolume = Mathf.Clamp01(volume);
         if (musicSource != null)
+        {
             musicSource.volume = musicVolume;
+        }
         SaveMusicVolume();
     }
 
@@ -93,27 +112,28 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    private AudioClip GetCurrentTrack()
+    private void PlayCurrentTrack()
     {
-        if (musicTracks.Length == 0) return null;
-        return musicTracks[currentTrackIndex];
-    }
-
-    private void PlayNextTrackOrRepeat()
-    {
-        if (musicTracks.Length == 0)
+        if (musicTracks.Length > 0)
+        {
+            musicSource.clip = musicTracks[currentTrackIndex];
+            musicSource.Play();
+            isMusicPaused = false;
+        }
+        else
         {
             Debug.LogWarning("No tracks available in the music manager.");
-            return;
         }
+    }
 
-        currentTrackIndex++;
-        if (currentTrackIndex >= musicTracks.Length)
-        {
-            currentTrackIndex = 0;
-        }
+    private void PlayNextTrack()
+    {
+        currentTrackIndex = (currentTrackIndex + 1) % musicTracks.Length;
+        PlayCurrentTrack();
+    }
 
-        musicSource.clip = GetCurrentTrack();
-        musicSource.Play();
+    private bool IsValidTrackIndex(int trackIndex)
+    {
+        return trackIndex >= 0 && trackIndex < musicTracks.Length;
     }
 }

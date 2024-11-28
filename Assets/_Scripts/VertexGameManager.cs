@@ -36,6 +36,7 @@ public class VertexGameManager : MonoBehaviour
         });
         MainMenuUI.Instance.playButton.onClick.AddListener(() =>
         {
+            
             LevelManager.Instance.StartGame();
             PauseUI.Instance.gameObject.SetActive(false);
             GameOverUI.Instance.gameObject.SetActive(false);
@@ -57,16 +58,19 @@ public class VertexGameManager : MonoBehaviour
         GameOverUI.Instance.gameObject.SetActive(false);
         GameUI.Instance.PauseGameButton.onClick.AddListener(() =>
         {
+            MusicManager.Instance.PauseMusic();
             Time.timeScale = 0f;
             PauseUI.Instance.gameObject.SetActive(true);
         });
         PauseUI.Instance.continueButton.onClick.AddListener(() =>
         {
+            MusicManager.Instance.ResumeMusic();
             Time.timeScale = 1f;
             PauseUI.Instance.gameObject.SetActive(false);
         });
         PauseUI.Instance.retryPauseButton.onClick.AddListener(() =>
         {
+            MusicManager.Instance.ResumeMusic();
             RetryLevel();
         });
         PauseUI.Instance.menuPauseButton.onClick.AddListener(() =>
@@ -83,6 +87,7 @@ public class VertexGameManager : MonoBehaviour
         });
         LevelCompleteUI.Instance.LevelCompleteNextLevelButton.onClick.AddListener(() =>
         {
+            MusicManager.Instance.ResumeMusic();
             LevelCompleteUI.Instance.gameObject.SetActive(false);
             LevelManager.Instance.LoadNextLevel();
             LineDrawer.Instance.ResetMistakes();
@@ -90,18 +95,22 @@ public class VertexGameManager : MonoBehaviour
         });
         LevelCompleteUI.Instance.LevelCompleteRetryButton.onClick.AddListener(() =>
         {
+            MusicManager.Instance.ResumeMusic();
             RetryLevel();
         });
         LevelCompleteUI.Instance.LevelCompleteMenuButton.onClick.AddListener(() =>
         {
+            MusicManager.Instance.ResumeMusic();
             LevelManager.Instance.LoadMainMenu();
         });
         GameOverUI.Instance.GameOverRetryButton.onClick.AddListener(() =>
         {
+            MusicManager.Instance.ResumeMusic();
             RetryLevel();
         });
         GameOverUI.Instance.GameOverMenuButton.onClick.AddListener(() =>
         {
+            MusicManager.Instance.ResumeMusic();
             LevelManager.Instance.LoadMainMenu();
         });
     }
@@ -142,38 +151,33 @@ public class VertexGameManager : MonoBehaviour
     
     private void InitializeVolumeSliders()
     {
-        if (SettingsUI.Instance.musicVolumeSlider != null)
-        {
-            float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
-            SettingsUI.Instance.musicVolumeSlider.value = savedMusicVolume;
-            MusicManager.Instance.SetMusicVolume(savedMusicVolume);
-            UpdateMusicVolumeText(savedMusicVolume);
-            
-            SettingsUI.Instance.musicVolumeSlider.onValueChanged.AddListener((value) =>
-            {
-                MusicManager.Instance.SetMusicVolume(value);
-                PlayerPrefs.SetFloat("MusicVolume", value);
-                PlayerPrefs.Save();
-                UpdateMusicVolumeText(value);
-            });
-        }
+        float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        SettingsUI.Instance.musicVolumeSlider.value = savedMusicVolume;
+        MusicManager.Instance.SetMusicVolume(savedMusicVolume * 0.5f);
+        UpdateMusicVolumeText(savedMusicVolume);
 
-        if (SettingsUI.Instance.soundVolumeSlider != null)
+        SettingsUI.Instance.musicVolumeSlider.onValueChanged.AddListener((value) =>
         {
-            float savedSoundVolume = PlayerPrefs.GetFloat("SoundVolume", 1f);
-            SettingsUI.Instance.soundVolumeSlider.value = savedSoundVolume;
-            SoundEffectsManager.Instance.SetSFXVolume(savedSoundVolume);
-            UpdateSoundVolumeText(savedSoundVolume);
-            
-            SettingsUI.Instance.soundVolumeSlider.onValueChanged.AddListener((value) =>
-            {
-                SoundEffectsManager.Instance.SetSFXVolume(value);
-                PlayerPrefs.SetFloat("SoundVolume", value);
-                PlayerPrefs.Save();
-                UpdateSoundVolumeText(value);
-            });
-        }
+            MusicManager.Instance.SetMusicVolume(value * 0.5f);
+            PlayerPrefs.SetFloat("MusicVolume", value);
+            PlayerPrefs.Save();
+            UpdateMusicVolumeText(value);
+        });
+
+        float savedSoundVolume = PlayerPrefs.GetFloat("SoundVolume", 1f);
+        SettingsUI.Instance.soundVolumeSlider.value = savedSoundVolume;
+        SoundEffectsManager.Instance.SetSFXVolume(savedSoundVolume);
+        UpdateSoundVolumeText(savedSoundVolume);
+
+        SettingsUI.Instance.soundVolumeSlider.onValueChanged.AddListener((value) =>
+        {
+            SoundEffectsManager.Instance.SetSFXVolume(value);
+            PlayerPrefs.SetFloat("SoundVolume", value);
+            PlayerPrefs.Save();
+            UpdateSoundVolumeText(value);
+        });
     }
+
 
     public void RetryLevel()
     {
