@@ -77,6 +77,10 @@ public class VertexGameManager : MonoBehaviour
         {
             SettingsUI.Instance.gameObject.SetActive(true);
         });
+        LevelCompleteUI.Instance.LevelCompleteSettingsButton.onClick.AddListener(() =>
+        {
+            SettingsUI.Instance.gameObject.SetActive(true);
+        });
         LevelCompleteUI.Instance.LevelCompleteNextLevelButton.onClick.AddListener(() =>
         {
             LevelCompleteUI.Instance.gameObject.SetActive(false);
@@ -189,6 +193,7 @@ public class VertexGameManager : MonoBehaviour
         LineDrawer.Instance.MistakeCount = 3;
         Time.timeScale = 0f;
         GameOverUI.Instance.gameObject.SetActive(true);
+        SoundEffectsManager.Instance.PlaySound("defeatSound");
     }
 
     private void TimerEnded()
@@ -219,6 +224,7 @@ public class VertexGameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
         LevelCompleteUI.Instance.gameObject.SetActive(true);
+        SoundEffectsManager.Instance.PlaySound("victorySound");
         Debug.Log("Level Complete!");
     }
     private void OnDestroy()

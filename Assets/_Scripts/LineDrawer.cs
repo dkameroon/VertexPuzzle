@@ -86,7 +86,11 @@ public class LineDrawer : MonoBehaviour
                     {
                         Destroy(currentLineRenderer.gameObject);
                         HandleMistake();
-                        SoundEffectsManager.Instance.PlaySound("mistakeSound");
+                        if (MistakeCount <= 2)
+                        {
+                            SoundEffectsManager.Instance.PlaySound("mistakeSound");
+                        }
+                        
                     }
                     else
                     {
@@ -97,6 +101,11 @@ public class LineDrawer : MonoBehaviour
                         drawnLines.Add((endVertex, currentStartVertex));
                         
                         SetTopVertexMaterial(endVertex, lineMaterial);
+                        
+                        if (drawnLines.Count / 2 != totalPaths)
+                        {
+                            SoundEffectsManager.Instance.PlaySound("correctConnectionSound");
+                        }
                         
                         if (drawnLines.Count / 2 == totalPaths)
                         {
@@ -109,7 +118,10 @@ public class LineDrawer : MonoBehaviour
                     if (endVertex != currentStartVertex)
                     {
                         HandleMistake();
-                        SoundEffectsManager.Instance.PlaySound("mistakeSound");
+                        if (MistakeCount <= 2)
+                        {
+                            SoundEffectsManager.Instance.PlaySound("mistakeSound");
+                        }
                     }
                     Destroy(currentLineRenderer.gameObject);
                     SetTopVertexMaterial(currentStartVertex, originalMaterial);

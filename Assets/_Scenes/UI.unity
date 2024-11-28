@@ -2874,7 +2874,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736737818}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3309,7 +3309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2, g: 0.2, b: 0.2, a: 0.8156863}
+  m_Color: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7080,9 +7080,9 @@ RectTransform:
   - {fileID: 983981788}
   - {fileID: 1138793000}
   - {fileID: 695495115}
-  - {fileID: 736737819}
   - {fileID: 623426519}
   - {fileID: 1079396202}
+  - {fileID: 736737819}
   m_Father: {fileID: 461596462}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7104,7 +7104,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PauseGameButton: {fileID: 1138793002}
-  SettingsGameButton: {fileID: 0}
   levelText: {fileID: 983981789}
 --- !u!1 &2005983487
 GameObject:
