@@ -16,4 +16,4 @@ MonoBehaviour:
   - levelName: Level 1
     timeLimit: 10
   - levelName: Level 2
-    timeLimit: 20
+    timeLimit: 200
