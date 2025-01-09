@@ -71,11 +71,13 @@ public class VertexGameManager : MonoBehaviour
         PauseUI.Instance.retryPauseButton.onClick.AddListener(() =>
         {
             MusicManager.Instance.ResumeMusic();
+            SoundEffectsManager.Instance.StopAllSounds();
             RetryLevel();
         });
         PauseUI.Instance.menuPauseButton.onClick.AddListener(() =>
         {
             LevelManager.Instance.LoadMainMenu();
+            MusicManager.Instance.ResumeMusic();
         });
         PauseUI.Instance.settingsButton.onClick.AddListener(() =>
         {
@@ -88,6 +90,7 @@ public class VertexGameManager : MonoBehaviour
         LevelCompleteUI.Instance.LevelCompleteNextLevelButton.onClick.AddListener(() =>
         {
             MusicManager.Instance.ResumeMusic();
+            SoundEffectsManager.Instance.StopAllSounds();
             LevelCompleteUI.Instance.gameObject.SetActive(false);
             LevelManager.Instance.LoadNextLevel();
             LineDrawer.Instance.ResetMistakes();
@@ -96,6 +99,7 @@ public class VertexGameManager : MonoBehaviour
         LevelCompleteUI.Instance.LevelCompleteRetryButton.onClick.AddListener(() =>
         {
             MusicManager.Instance.ResumeMusic();
+            SoundEffectsManager.Instance.StopAllSounds();
             RetryLevel();
         });
         LevelCompleteUI.Instance.LevelCompleteMenuButton.onClick.AddListener(() =>
@@ -106,6 +110,7 @@ public class VertexGameManager : MonoBehaviour
         GameOverUI.Instance.GameOverRetryButton.onClick.AddListener(() =>
         {
             MusicManager.Instance.ResumeMusic();
+            SoundEffectsManager.Instance.StopAllSounds();
             RetryLevel();
         });
         GameOverUI.Instance.GameOverMenuButton.onClick.AddListener(() =>
