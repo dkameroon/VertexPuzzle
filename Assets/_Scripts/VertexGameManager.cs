@@ -47,10 +47,22 @@ public class VertexGameManager : MonoBehaviour
         {
             LevelManager.Instance.ResetProgress();
         });
-        SettingsUI.Instance.gameObject.SetActive(false);
+        SettingsUI.Instance.musicOffButton.onClick.AddListener(() =>
+        {
+            SettingsUI.Instance.gameObject.SetActive(false);
+            AdvancedSettingsUI.Instance.gameObject.SetActive(false);
+            InitializeVolumeSliders();
+        });
         SettingsUI.Instance.settingsCloseButton.onClick.AddListener(() =>
         {
             SettingsUI.Instance.gameObject.SetActive(false);
+            AdvancedSettingsUI.Instance.gameObject.SetActive(false);
+            InitializeVolumeSliders();
+        });
+        AdvancedSettingsUI.Instance.advancedSettingsCloseButton.onClick.AddListener(() =>
+        {
+            SettingsUI.Instance.gameObject.SetActive(false);
+            AdvancedSettingsUI.Instance.gameObject.SetActive(false);
             InitializeVolumeSliders();
         });
         PauseUI.Instance.gameObject.SetActive(false);
@@ -157,11 +169,11 @@ public class VertexGameManager : MonoBehaviour
     private void InitializeVolumeSliders()
     {
         float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
-        SettingsUI.Instance.musicVolumeSlider.value = savedMusicVolume;
+        AdvancedSettingsUI.Instance.musicVolumeSlider.value = savedMusicVolume;
         MusicManager.Instance.SetMusicVolume(savedMusicVolume * 0.5f);
         UpdateMusicVolumeText(savedMusicVolume);
 
-        SettingsUI.Instance.musicVolumeSlider.onValueChanged.AddListener((value) =>
+        AdvancedSettingsUI.Instance.musicVolumeSlider.onValueChanged.AddListener((value) =>
         {
             MusicManager.Instance.SetMusicVolume(value * 0.5f);
             PlayerPrefs.SetFloat("MusicVolume", value);
@@ -170,11 +182,11 @@ public class VertexGameManager : MonoBehaviour
         });
 
         float savedSoundVolume = PlayerPrefs.GetFloat("SoundVolume", 1f);
-        SettingsUI.Instance.soundVolumeSlider.value = savedSoundVolume;
+        AdvancedSettingsUI.Instance.soundVolumeSlider.value = savedSoundVolume;
         SoundEffectsManager.Instance.SetSFXVolume(savedSoundVolume);
         UpdateSoundVolumeText(savedSoundVolume);
 
-        SettingsUI.Instance.soundVolumeSlider.onValueChanged.AddListener((value) =>
+        AdvancedSettingsUI.Instance.soundVolumeSlider.onValueChanged.AddListener((value) =>
         {
             SoundEffectsManager.Instance.SetSFXVolume(value);
             PlayerPrefs.SetFloat("SoundVolume", value);
@@ -213,19 +225,19 @@ public class VertexGameManager : MonoBehaviour
     
     private void UpdateMusicVolumeText(float volume)
     {
-        if (SettingsUI.Instance.musicSliderText != null)
+        if (AdvancedSettingsUI.Instance.musicSliderText != null)
         {
             int percentage = Mathf.RoundToInt(volume * 100);
-            SettingsUI.Instance.musicSliderText.text = $"{percentage}%";
+            AdvancedSettingsUI.Instance.musicSliderText.text = $"{percentage}%";
         }
     }
 
     private void UpdateSoundVolumeText(float volume)
     {
-        if (SettingsUI.Instance.soundsSliderText != null)
+        if (AdvancedSettingsUI.Instance.soundsSliderText != null)
         {
             int percentage = Mathf.RoundToInt(volume * 100);
-            SettingsUI.Instance.soundsSliderText.text = $"{percentage}%";
+            AdvancedSettingsUI.Instance.soundsSliderText.text = $"{percentage}%";
         }
     }
     

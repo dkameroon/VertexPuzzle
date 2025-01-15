@@ -9,12 +9,10 @@ public class SettingsUI : MonoBehaviour
     public static SettingsUI Instance { get; private set; }
     
     [SerializeField] public Button settingsCloseButton;
-
-    [SerializeField] public Slider musicVolumeSlider;
-    [SerializeField] public Slider soundVolumeSlider;
-
-    [SerializeField] public TextMeshProUGUI musicSliderText;
-    [SerializeField] public TextMeshProUGUI soundsSliderText;
+    [SerializeField] public Button musicOffButton;
+    [SerializeField] public Button musicOnButton;
+    [SerializeField] public Button soundsOffButton;
+    [SerializeField] public Button soundsOnButton;
 
     private void Awake()
     {
