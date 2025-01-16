@@ -8,6 +8,7 @@ public class SettingsUI : MonoBehaviour
 {
     public static SettingsUI Instance { get; private set; }
     
+    [SerializeField] public Button advancedSettingsButton;
     [SerializeField] public Button settingsCloseButton;
     [SerializeField] public Button musicOffButton;
     [SerializeField] public Button musicOnButton;

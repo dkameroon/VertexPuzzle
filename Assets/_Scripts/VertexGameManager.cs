@@ -6,10 +6,13 @@ using UnityEngine;
 public class VertexGameManager : MonoBehaviour
 {
     public static VertexGameManager Instance { get; private set; }
-    public LevelData levelData; 
+    public LevelData levelData;
 
     private float remainingTime;
     private bool isTimerRunning;
+
+    private float previousMusicVolume;
+    private float previousSoundVolume;
 
     private void Awake()
     {
@@ -24,11 +27,14 @@ public class VertexGameManager : MonoBehaviour
         }
     }
 
-
     private void Start()
     {
+        CheckMusic();
+        CheckSound();
         InitializeVolumeSliders();
         MainMenuUI.Instance.thankYouMessage.gameObject.SetActive(false);
+        AdvancedSettingsUI.Instance.gameObject.SetActive(false);
+        SettingsUI.Instance.gameObject.SetActive(false);
         MainMenuUI.Instance.okThankYouMessage.onClick.AddListener(() =>
         {
             MainMenuUI.Instance.thankYouMessage.gameObject.SetActive(false);
@@ -36,7 +42,6 @@ public class VertexGameManager : MonoBehaviour
         });
         MainMenuUI.Instance.playButton.onClick.AddListener(() =>
         {
-            
             LevelManager.Instance.StartGame();
             PauseUI.Instance.gameObject.SetActive(false);
             GameOverUI.Instance.gameObject.SetActive(false);
@@ -47,30 +52,77 @@ public class VertexGameManager : MonoBehaviour
         {
             LevelManager.Instance.ResetProgress();
         });
+        MainMenuUI.Instance.musicOffButton.onClick.AddListener(() =>
+        {
+            MainMenuUI.Instance.musicOnButton.gameObject.SetActive(true);
+            MainMenuUI.Instance.musicOffButton.gameObject.SetActive(false);
+            ToggleMusic();
+        });
+        MainMenuUI.Instance.musicOnButton.onClick.AddListener(() =>
+        {
+            MainMenuUI.Instance.musicOnButton.gameObject.SetActive(false);
+            MainMenuUI.Instance.musicOffButton.gameObject.SetActive(true);
+            ToggleMusic();
+        });
+        MainMenuUI.Instance.soundsOffButton.onClick.AddListener(() =>
+        {
+            MainMenuUI.Instance.soundsOnButton.gameObject.SetActive(true);
+            MainMenuUI.Instance.soundsOffButton.gameObject.SetActive(false);
+            ToggleSound();
+        });
+        MainMenuUI.Instance.soundsOnButton.onClick.AddListener(() =>
+        {
+            MainMenuUI.Instance.soundsOnButton.gameObject.SetActive(false);
+            MainMenuUI.Instance.soundsOffButton.gameObject.SetActive(true);
+            ToggleSound();
+        });
         SettingsUI.Instance.musicOffButton.onClick.AddListener(() =>
         {
-            SettingsUI.Instance.gameObject.SetActive(false);
-            AdvancedSettingsUI.Instance.gameObject.SetActive(false);
-            InitializeVolumeSliders();
+            SettingsUI.Instance.musicOnButton.gameObject.SetActive(true);
+            SettingsUI.Instance.musicOffButton.gameObject.SetActive(false);
+            ToggleMusic();
+        });
+        SettingsUI.Instance.musicOnButton.onClick.AddListener(() =>
+        {
+            SettingsUI.Instance.musicOnButton.gameObject.SetActive(false);
+            SettingsUI.Instance.musicOffButton.gameObject.SetActive(true);
+            ToggleMusic();
+        });
+        SettingsUI.Instance.soundsOffButton.onClick.AddListener(() =>
+        {
+            SettingsUI.Instance.soundsOnButton.gameObject.SetActive(true);
+            SettingsUI.Instance.soundsOffButton.gameObject.SetActive(false);
+            ToggleSound();
+        });
+        SettingsUI.Instance.soundsOnButton.onClick.AddListener(() =>
+        {
+            SettingsUI.Instance.soundsOnButton.gameObject.SetActive(false);
+            SettingsUI.Instance.soundsOffButton.gameObject.SetActive(true);
+            ToggleSound();
         });
         SettingsUI.Instance.settingsCloseButton.onClick.AddListener(() =>
         {
             SettingsUI.Instance.gameObject.SetActive(false);
             AdvancedSettingsUI.Instance.gameObject.SetActive(false);
-            InitializeVolumeSliders();
+        });
+        SettingsUI.Instance.advancedSettingsButton.onClick.AddListener(() =>
+        {
+            AdvancedSettingsUI.Instance.gameObject.SetActive(true);
+            SettingsUI.Instance.gameObject.SetActive(false);
+            
         });
         AdvancedSettingsUI.Instance.advancedSettingsCloseButton.onClick.AddListener(() =>
         {
-            SettingsUI.Instance.gameObject.SetActive(false);
+            SettingsUI.Instance.gameObject.SetActive(true);
             AdvancedSettingsUI.Instance.gameObject.SetActive(false);
-            InitializeVolumeSliders();
+            
         });
         PauseUI.Instance.gameObject.SetActive(false);
         LevelCompleteUI.Instance.gameObject.SetActive(false);
         GameOverUI.Instance.gameObject.SetActive(false);
         GameUI.Instance.PauseGameButton.onClick.AddListener(() =>
         {
-            MusicManager.Instance.PauseMusic();
+            //MusicManager.Instance.PauseMusic();
             Time.timeScale = 0f;
             PauseUI.Instance.gameObject.SetActive(true);
         });
@@ -94,6 +146,8 @@ public class VertexGameManager : MonoBehaviour
         PauseUI.Instance.settingsButton.onClick.AddListener(() =>
         {
             SettingsUI.Instance.gameObject.SetActive(true);
+            CheckMusic();
+            CheckSound();
         });
         LevelCompleteUI.Instance.LevelCompleteSettingsButton.onClick.AddListener(() =>
         {
@@ -131,7 +185,7 @@ public class VertexGameManager : MonoBehaviour
             LevelManager.Instance.LoadMainMenu();
         });
     }
-    
+
     private void Update()
     {
         if (isTimerRunning && remainingTime > 0)
@@ -149,52 +203,106 @@ public class VertexGameManager : MonoBehaviour
             }
         }
     }
-    
-     public void SetLevelTime(string levelName)
+
+    public void CheckMusic()
     {
-        int timeLimit = levelData.GetTimeLimit(levelName);
-        remainingTime = (timeLimit / 100 * 60) + (timeLimit % 100);
+        float currentMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
+        SettingsUI.Instance.musicOffButton.gameObject.SetActive(currentMusicVolume == 0);
+        SettingsUI.Instance.musicOnButton.gameObject.SetActive(currentMusicVolume > 0);
     }
 
-    public void StartTimer()
+    public void CheckSound()
     {
-        isTimerRunning = true;
+        float currentSoundVolume = PlayerPrefs.GetFloat("SoundVolume", 0.5f);
+        SettingsUI.Instance.soundsOffButton.gameObject.SetActive(currentSoundVolume == 0);
+        SettingsUI.Instance.soundsOnButton.gameObject.SetActive(currentSoundVolume > 0);
     }
 
-    public void StopTimer()
+    public void ToggleMusic()
+{
+    float currentMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
+
+    if (currentMusicVolume > 0)
     {
-        isTimerRunning = false;
+        previousMusicVolume = currentMusicVolume;
+        MusicManager.Instance.SetMusicVolume(0);
+        PlayerPrefs.SetFloat("MusicVolume", 0);
+        AdvancedSettingsUI.Instance.musicVolumeSlider.value = 0;
+        MusicManager.Instance.PauseMusic();
     }
-    
-    private void InitializeVolumeSliders()
+    else
     {
-        float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
-        AdvancedSettingsUI.Instance.musicVolumeSlider.value = savedMusicVolume;
-        MusicManager.Instance.SetMusicVolume(savedMusicVolume * 0.5f);
-        UpdateMusicVolumeText(savedMusicVolume);
-
-        AdvancedSettingsUI.Instance.musicVolumeSlider.onValueChanged.AddListener((value) =>
-        {
-            MusicManager.Instance.SetMusicVolume(value * 0.5f);
-            PlayerPrefs.SetFloat("MusicVolume", value);
-            PlayerPrefs.Save();
-            UpdateMusicVolumeText(value);
-        });
-
-        float savedSoundVolume = PlayerPrefs.GetFloat("SoundVolume", 1f);
-        AdvancedSettingsUI.Instance.soundVolumeSlider.value = savedSoundVolume;
-        SoundEffectsManager.Instance.SetSFXVolume(savedSoundVolume);
-        UpdateSoundVolumeText(savedSoundVolume);
-
-        AdvancedSettingsUI.Instance.soundVolumeSlider.onValueChanged.AddListener((value) =>
-        {
-            SoundEffectsManager.Instance.SetSFXVolume(value);
-            PlayerPrefs.SetFloat("SoundVolume", value);
-            PlayerPrefs.Save();
-            UpdateSoundVolumeText(value);
-        });
+        MusicManager.Instance.SetMusicVolume(previousMusicVolume);
+        PlayerPrefs.SetFloat("MusicVolume", previousMusicVolume);
+        AdvancedSettingsUI.Instance.musicVolumeSlider.value = previousMusicVolume;
+        MusicManager.Instance.ResumeMusic();
     }
 
+    PlayerPrefs.Save();
+    CheckMusic();
+    UpdateMusicVolumeText(PlayerPrefs.GetFloat("MusicVolume"));
+}
+
+public void ToggleSound()
+{
+    float currentSoundVolume = PlayerPrefs.GetFloat("SoundVolume", 0.5f);
+
+    if (currentSoundVolume > 0)
+    {
+        previousSoundVolume = currentSoundVolume;
+        SoundEffectsManager.Instance.SetSFXVolume(0);
+        PlayerPrefs.SetFloat("SoundVolume", 0);
+        AdvancedSettingsUI.Instance.soundVolumeSlider.value = 0;
+    }
+    else
+    {
+        SoundEffectsManager.Instance.SetSFXVolume(previousSoundVolume);
+        PlayerPrefs.SetFloat("SoundVolume", previousSoundVolume);
+        AdvancedSettingsUI.Instance.soundVolumeSlider.value = previousSoundVolume;
+        SoundEffectsManager.Instance.PlaySound("correctConnectionSound");
+    }
+
+    PlayerPrefs.Save();
+    CheckSound();
+    UpdateSoundVolumeText(PlayerPrefs.GetFloat("SoundVolume"));
+}
+
+private void InitializeVolumeSliders()
+{
+    float savedMusicVolume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
+    previousMusicVolume = savedMusicVolume > 0 ? savedMusicVolume : 0.5f;
+    AdvancedSettingsUI.Instance.musicVolumeSlider.value = savedMusicVolume;
+    MusicManager.Instance.SetMusicVolume(savedMusicVolume);
+    UpdateMusicVolumeText(savedMusicVolume);
+
+    AdvancedSettingsUI.Instance.musicVolumeSlider.onValueChanged.RemoveAllListeners();
+    AdvancedSettingsUI.Instance.musicVolumeSlider.onValueChanged.AddListener((value) =>
+    {
+        MusicManager.Instance.SetMusicVolume(value);
+        PlayerPrefs.SetFloat("MusicVolume", value);
+        PlayerPrefs.Save();
+        if (value > 0) previousMusicVolume = value;
+        UpdateMusicVolumeText(value);
+        CheckMusic();
+    });
+
+    float savedSoundVolume = PlayerPrefs.GetFloat("SoundVolume", 0.5f);
+    previousSoundVolume = savedSoundVolume > 0 ? savedSoundVolume : 0.5f;
+    AdvancedSettingsUI.Instance.soundVolumeSlider.value = savedSoundVolume;
+    SoundEffectsManager.Instance.SetSFXVolume(savedSoundVolume);
+    UpdateSoundVolumeText(savedSoundVolume);
+
+    AdvancedSettingsUI.Instance.soundVolumeSlider.onValueChanged.RemoveAllListeners();
+    AdvancedSettingsUI.Instance.soundVolumeSlider.onValueChanged.AddListener((value) =>
+    {
+        SoundEffectsManager.Instance.SetSFXVolume(value);
+        PlayerPrefs.SetFloat("SoundVolume", value);
+        PlayerPrefs.Save();
+        if (value > 0) previousSoundVolume = value;
+        UpdateSoundVolumeText(value);
+        CheckSound();
+    });
+}
 
     public void RetryLevel()
     {
@@ -222,7 +330,6 @@ public class VertexGameManager : MonoBehaviour
         VertexGameOver();
     }
 
-    
     private void UpdateMusicVolumeText(float volume)
     {
         if (AdvancedSettingsUI.Instance.musicSliderText != null)
@@ -240,14 +347,30 @@ public class VertexGameManager : MonoBehaviour
             AdvancedSettingsUI.Instance.soundsSliderText.text = $"{percentage}%";
         }
     }
-    
+
     public void LevelComplete()
     {
         Time.timeScale = 0f;
         LevelCompleteUI.Instance.gameObject.SetActive(true);
         SoundEffectsManager.Instance.PlaySound("victorySound");
-        Debug.Log("Level Complete!");
     }
+
+    public void SetLevelTime(string levelName)
+    {
+        int timeLimit = levelData.GetTimeLimit(levelName);
+        remainingTime = (timeLimit / 100 * 60) + (timeLimit % 100);
+    }
+
+    public void StartTimer()
+    {
+        isTimerRunning = true;
+    }
+
+    public void StopTimer()
+    {
+        isTimerRunning = false;
+    }
+
     private void OnDestroy()
     {
         GameUI.Instance.PauseGameButton.onClick.RemoveAllListeners();

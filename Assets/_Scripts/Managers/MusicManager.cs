@@ -47,6 +47,11 @@ public class MusicManager : MonoBehaviour
             PlayNextTrack();
         }
     }
+    
+    public float GetMusicVolume()
+    {
+        return musicVolume;
+    }
 
     public void PlayMusic(int trackIndex)
     {

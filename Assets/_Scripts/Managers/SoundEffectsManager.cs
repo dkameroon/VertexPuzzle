@@ -51,6 +51,8 @@ public class SoundEffectsManager : MonoBehaviour
         sfxSource.PlayOneShot(clip, sfxVolume);
     }
 
+
+    
     public void StopAllSounds()
     {
         if (sfxSource != null)
@@ -60,6 +62,7 @@ public class SoundEffectsManager : MonoBehaviour
     }
 
     
+    
     public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);
@@ -67,6 +70,8 @@ public class SoundEffectsManager : MonoBehaviour
             sfxSource.volume = sfxVolume;
         SaveSFXVolume();
     }
+    
+    
 
     private void SaveSFXVolume()
     {
